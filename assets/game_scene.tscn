@@ -1,0 +1,93 @@
+[gd_scene load_steps=8 format=3 uid="uid://mqqv7xlpxit7"]
+
+[ext_resource type="Script" path="res://assets/game_scene.gd" id="1_bpi3q"]
+[ext_resource type="Texture2D" uid="uid://brpbgpah10mur" path="res://assets/game/textured-fertile-soil-background-gardening-600nw-1413270422 (1).png" id="2_o8g5y"]
+[ext_resource type="PackedScene" uid="uid://dkvvbyv0tccxl" path="res://ant.tscn" id="3_hsx86"]
+[ext_resource type="Script" path="res://assets/HUD.gd" id="4_iv1uh"]
+[ext_resource type="Texture2D" uid="uid://cnkm37bq2w862" path="res://assets/plus.png" id="5_30kph"]
+
+[sub_resource type="Gradient" id="Gradient_6aufg"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0, 0, 0, 0.615686)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_lrx3s"]
+gradient = SubResource("Gradient_6aufg")
+width = 400
+height = 50
+
+[node name="game_scene" type="Node2D"]
+
+[node name="WorldCam" type="Camera2D" parent="."]
+
+[node name="BG" type="Sprite2D" parent="WorldCam"]
+texture = ExtResource("2_o8g5y")
+
+[node name="TransparentWindow" type="Window" parent="."]
+transparent_bg = true
+mode = 3
+initial_position = 1
+size = Vector2i(1920, 1080)
+exclusive = true
+unresizable = true
+borderless = true
+always_on_top = true
+transparent = true
+popup_window = true
+script = ExtResource("1_bpi3q")
+
+[node name="TransCam" type="Camera2D" parent="TransparentWindow"]
+
+[node name="Ants" type="Node" parent="TransparentWindow/TransCam"]
+
+[node name="Ant" parent="TransparentWindow/TransCam/Ants" instance=ExtResource("3_hsx86")]
+
+[node name="HUD" type="Camera2D" parent="TransparentWindow"]
+script = ExtResource("4_iv1uh")
+
+[node name="TotalAnts" type="Sprite2D" parent="TransparentWindow/HUD"]
+modulate = Color(1, 1, 1, 0.639216)
+position = Vector2(-930, 400)
+texture = SubResource("GradientTexture2D_lrx3s")
+offset = Vector2(190, 25)
+
+[node name="Counter" type="RichTextLabel" parent="TransparentWindow/HUD/TotalAnts"]
+offset_right = 300.0
+offset_bottom = 100.0
+scale = Vector2(2, 2)
+text = "Total Ants: 0"
+
+[node name="Button" type="Button" parent="TransparentWindow/HUD/TotalAnts"]
+offset_left = 250.0
+offset_right = 770.0
+offset_bottom = 520.0
+scale = Vector2(0.096, 0.096)
+icon = ExtResource("5_30kph")
+flat = true
+
+[node name="TotalIdle" type="Sprite2D" parent="TransparentWindow/HUD"]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(-930, 350)
+texture = SubResource("GradientTexture2D_lrx3s")
+offset = Vector2(190, 25)
+
+[node name="Counter" type="RichTextLabel" parent="TransparentWindow/HUD/TotalIdle"]
+offset_right = 300.0
+offset_bottom = 100.0
+scale = Vector2(2, 2)
+text = "Jobless Ants: 0"
+
+[node name="TotalScavs" type="Sprite2D" parent="TransparentWindow/HUD"]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(-930, 300)
+texture = SubResource("GradientTexture2D_lrx3s")
+offset = Vector2(190, 25)
+
+[node name="Counter" type="RichTextLabel" parent="TransparentWindow/HUD/TotalScavs"]
+offset_right = 300.0
+offset_bottom = 100.0
+scale = Vector2(2, 2)
+text = "Total Scavs: 0"
+
+[connection signal="button_down" from="TransparentWindow/HUD/TotalAnts/Button" to="TransparentWindow" method="_onSummon"]
+[connection signal="button_up" from="TransparentWindow/HUD/TotalAnts/Button" to="TransparentWindow" method="_onSummon"]
+[connection signal="pressed" from="TransparentWindow/HUD/TotalAnts/Button" to="TransparentWindow" method="_onSummon"]
