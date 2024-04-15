@@ -1,19 +1,32 @@
-[gd_scene load_steps=8 format=3 uid="uid://mqqv7xlpxit7"]
+[gd_scene load_steps=15 format=3 uid="uid://mqqv7xlpxit7"]
 
 [ext_resource type="Script" path="res://assets/game_scene.gd" id="1_bpi3q"]
 [ext_resource type="Texture2D" uid="uid://brpbgpah10mur" path="res://assets/game/textured-fertile-soil-background-gardening-600nw-1413270422 (1).png" id="2_o8g5y"]
-[ext_resource type="PackedScene" uid="uid://dkvvbyv0tccxl" path="res://ant.tscn" id="3_hsx86"]
+[ext_resource type="Texture2D" uid="uid://dmggl1ckyg6pi" path="res://assets/game/tutorial/scavengers.png" id="4_ehrlc"]
 [ext_resource type="Script" path="res://assets/HUD.gd" id="4_iv1uh"]
 [ext_resource type="Texture2D" uid="uid://cnkm37bq2w862" path="res://assets/plus.png" id="5_30kph"]
+[ext_resource type="Texture2D" uid="uid://d1bbtjercl0cg" path="res://assets/game/totalantsicon.png" id="6_bq5f4"]
+[ext_resource type="Texture2D" uid="uid://k0echpjng601" path="res://assets/game/scavanticon.png" id="7_73hs7"]
+[ext_resource type="Texture2D" uid="uid://ba2fbcbmkvahn" path="res://assets/game/food.png" id="8_rnpk6"]
+[ext_resource type="Texture2D" uid="uid://bynqrjbuo2i7o" path="res://assets/game/ant.png" id="9_0h0hf"]
+[ext_resource type="Texture2D" uid="uid://eif8np2pgjdx" path="res://assets/game/stone.png" id="9_4jars"]
 
-[sub_resource type="Gradient" id="Gradient_6aufg"]
+[sub_resource type="Gradient" id="Gradient_h0b2c"]
 offsets = PackedFloat32Array(0)
-colors = PackedColorArray(0, 0, 0, 0.615686)
+colors = PackedColorArray(0.0313726, 0.0117647, 0.00784314, 0.784314)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_lrx3s"]
-gradient = SubResource("Gradient_6aufg")
-width = 400
-height = 50
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_vmhrb"]
+gradient = SubResource("Gradient_h0b2c")
+width = 1920
+
+[sub_resource type="Gradient" id="Gradient_ruaog"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0.0313726, 0.0117647, 0.00784314, 0.686275)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ubj6o"]
+gradient = SubResource("Gradient_ruaog")
+width = 1
+height = 1
 
 [node name="game_scene" type="Node2D"]
 
@@ -27,67 +40,210 @@ transparent_bg = true
 mode = 3
 initial_position = 1
 size = Vector2i(1920, 1080)
-exclusive = true
+transient = true
 unresizable = true
 borderless = true
 always_on_top = true
 transparent = true
-popup_window = true
 script = ExtResource("1_bpi3q")
 
 [node name="TransCam" type="Camera2D" parent="TransparentWindow"]
 
 [node name="Ants" type="Node" parent="TransparentWindow/TransCam"]
 
-[node name="Ant" parent="TransparentWindow/TransCam/Ants" instance=ExtResource("3_hsx86")]
-
 [node name="HUD" type="Camera2D" parent="TransparentWindow"]
+z_index = 1
 script = ExtResource("4_iv1uh")
 
-[node name="TotalAnts" type="Sprite2D" parent="TransparentWindow/HUD"]
-modulate = Color(1, 1, 1, 0.639216)
-position = Vector2(-930, 400)
-texture = SubResource("GradientTexture2D_lrx3s")
-offset = Vector2(190, 25)
+[node name="Tutorial" type="Node2D" parent="TransparentWindow/HUD"]
+visible = false
 
-[node name="Counter" type="RichTextLabel" parent="TransparentWindow/HUD/TotalAnts"]
-offset_right = 300.0
-offset_bottom = 100.0
-scale = Vector2(2, 2)
-text = "Total Ants: 0"
+[node name="Sprite2D" type="Sprite2D" parent="TransparentWindow/HUD/Tutorial"]
+position = Vector2(-247, -194)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("4_ehrlc")
 
-[node name="Button" type="Button" parent="TransparentWindow/HUD/TotalAnts"]
-offset_left = 250.0
-offset_right = 770.0
-offset_bottom = 520.0
-scale = Vector2(0.096, 0.096)
+[node name="ResourceBar" type="Sprite2D" parent="TransparentWindow/HUD"]
+position = Vector2(0, -508)
+texture = SubResource("GradientTexture2D_vmhrb")
+
+[node name="TotalAnts" type="Sprite2D" parent="TransparentWindow/HUD/ResourceBar"]
+position = Vector2(-785, 1)
+scale = Vector2(0.1, 0.0970588)
+texture = ExtResource("6_bq5f4")
+
+[node name="Counter" type="RichTextLabel" parent="TransparentWindow/HUD/ResourceBar/TotalAnts"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -568.0
+offset_top = -340.0
+offset_right = -531.0
+offset_bottom = -317.0
+grow_horizontal = 0
+scale = Vector2(30, 30)
+mouse_filter = 2
+text = "0"
+scroll_active = false
+shortcut_keys_enabled = false
+
+[node name="Button" type="Button" parent="TransparentWindow/HUD/ResourceBar/TotalAnts"]
+anchors_preset = -1
+anchor_left = 0.358
+anchor_top = 1.0
+anchor_right = 0.819
+anchor_bottom = 1.765
+offset_left = 326.176
+offset_top = -340.0
+offset_right = 326.168
+offset_bottom = -340.2
+focus_mode = 0
 icon = ExtResource("5_30kph")
 flat = true
 
-[node name="TotalIdle" type="Sprite2D" parent="TransparentWindow/HUD"]
-modulate = Color(1, 1, 1, 0)
-position = Vector2(-930, 350)
-texture = SubResource("GradientTexture2D_lrx3s")
-offset = Vector2(190, 25)
+[node name="Cost" type="RichTextLabel" parent="TransparentWindow/HUD/ResourceBar/TotalAnts"]
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.957
+offset_left = -720.0
+offset_top = 340.0
+offset_right = -1706.0
+offset_bottom = -260.76
+grow_horizontal = 0
+scale = Vector2(10, 10)
+mouse_filter = 2
+text = "summon new ant:
+cost:"
+scroll_active = false
+shortcut_keys_enabled = false
 
-[node name="Counter" type="RichTextLabel" parent="TransparentWindow/HUD/TotalIdle"]
-offset_right = 300.0
-offset_bottom = 100.0
-scale = Vector2(2, 2)
-text = "Jobless Ants: 0"
+[node name="Sprite2D" type="Sprite2D" parent="TransparentWindow/HUD/ResourceBar/TotalAnts/Cost"]
+position = Vector2(68, 37.0909)
+scale = Vector2(0.40625, 0.40625)
+texture = ExtResource("8_rnpk6")
 
-[node name="TotalScavs" type="Sprite2D" parent="TransparentWindow/HUD"]
-modulate = Color(1, 1, 1, 0)
-position = Vector2(-930, 300)
-texture = SubResource("GradientTexture2D_lrx3s")
-offset = Vector2(190, 25)
+[node name="RichTextLabel" type="RichTextLabel" parent="TransparentWindow/HUD/ResourceBar/TotalAnts/Cost"]
+layout_mode = 0
+offset_left = 42.0
+offset_top = 24.1212
+offset_right = 83.0
+offset_bottom = 52.1212
+text = "5"
 
-[node name="Counter" type="RichTextLabel" parent="TransparentWindow/HUD/TotalScavs"]
-offset_right = 300.0
-offset_bottom = 100.0
-scale = Vector2(2, 2)
-text = "Total Scavs: 0"
+[node name="Sprite2D" type="Sprite2D" parent="TransparentWindow/HUD/ResourceBar/TotalAnts"]
+z_index = -1
+position = Vector2(260, 597.576)
+scale = Vector2(2000, 556.364)
+texture = SubResource("GradientTexture2D_ubj6o")
 
-[connection signal="button_down" from="TransparentWindow/HUD/TotalAnts/Button" to="TransparentWindow" method="_onSummon"]
-[connection signal="button_up" from="TransparentWindow/HUD/TotalAnts/Button" to="TransparentWindow" method="_onSummon"]
-[connection signal="pressed" from="TransparentWindow/HUD/TotalAnts/Button" to="TransparentWindow" method="_onSummon"]
+[node name="TotalScavs" type="Sprite2D" parent="TransparentWindow/HUD/ResourceBar"]
+position = Vector2(-573, 0.0294189)
+scale = Vector2(0.264, 0.256236)
+texture = ExtResource("7_73hs7")
+
+[node name="Counter" type="RichTextLabel" parent="TransparentWindow/HUD/ResourceBar/TotalScavs"]
+anchors_preset = -1
+anchor_left = 1.061
+anchor_right = 1.061
+offset_left = -125.25
+offset_top = -125.0
+offset_right = -88.25
+offset_bottom = -102.0
+grow_horizontal = 0
+scale = Vector2(11, 11)
+mouse_filter = 2
+text = "0"
+scroll_active = false
+shortcut_keys_enabled = false
+
+[node name="Button" type="Button" parent="TransparentWindow/HUD/ResourceBar/TotalScavs"]
+anchors_preset = -1
+anchor_left = 0.106
+anchor_top = 1.03
+anchor_right = 0.907
+anchor_bottom = 1.831
+offset_left = 390.165
+offset_top = -124.924
+offset_right = 709.915
+offset_bottom = 194.826
+scale = Vector2(0.385, 0.385)
+focus_mode = 0
+icon = ExtResource("5_30kph")
+flat = true
+
+[node name="Cost" type="RichTextLabel" parent="TransparentWindow/HUD/ResourceBar/TotalScavs"]
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.957
+offset_left = -245.788
+offset_top = 133.0
+offset_right = -320.788
+offset_bottom = -56.25
+grow_horizontal = 0
+scale = Vector2(3.75, 3.75)
+mouse_filter = 2
+text = "assign new scavenger:
+cost:"
+scroll_active = false
+shortcut_keys_enabled = false
+
+[node name="Sprite2D2" type="Sprite2D" parent="TransparentWindow/HUD/ResourceBar/TotalScavs/Cost"]
+position = Vector2(63.7668, 36.7913)
+rotation = -1.5708
+scale = Vector2(0.870627, 0.870627)
+texture = ExtResource("9_0h0hf")
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="TransparentWindow/HUD/ResourceBar/TotalScavs/Cost"]
+layout_mode = 0
+offset_left = 44.9192
+offset_top = 24.1108
+offset_right = 85.9192
+offset_bottom = 52.1108
+text = "1"
+
+[node name="Sprite2D" type="Sprite2D" parent="TransparentWindow/HUD/ResourceBar/TotalScavs"]
+z_index = -1
+position = Vector2(185.605, 230.142)
+scale = Vector2(871.211, 210.743)
+texture = SubResource("GradientTexture2D_ubj6o")
+
+[node name="TotalFood" type="Sprite2D" parent="TransparentWindow/HUD/ResourceBar"]
+position = Vector2(57, 1)
+texture = ExtResource("8_rnpk6")
+
+[node name="Counter" type="RichTextLabel" parent="TransparentWindow/HUD/ResourceBar/TotalFood"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -32.0
+offset_top = -33.0
+offset_right = 5.0
+offset_bottom = -10.0
+grow_horizontal = 0
+scale = Vector2(2.8, 2.8)
+mouse_filter = 2
+text = "0"
+scroll_active = false
+shortcut_keys_enabled = false
+
+[node name="TotalStone" type="Sprite2D" parent="TransparentWindow/HUD/ResourceBar"]
+position = Vector2(227, 0)
+texture = ExtResource("9_4jars")
+
+[node name="Counter" type="RichTextLabel" parent="TransparentWindow/HUD/ResourceBar/TotalStone"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -30.0
+offset_top = -33.0
+offset_right = 7.0
+offset_bottom = -10.0
+grow_horizontal = 0
+scale = Vector2(2.8, 2.8)
+mouse_filter = 2
+text = "0"
+scroll_active = false
+shortcut_keys_enabled = false
+
+[connection signal="pressed" from="TransparentWindow/HUD/ResourceBar/TotalAnts/Button" to="TransparentWindow" method="addAnts"]
+[connection signal="pressed" from="TransparentWindow/HUD/ResourceBar/TotalScavs/Button" to="TransparentWindow" method="changeRole" binds= ["Idle", "Scavenging"]]
