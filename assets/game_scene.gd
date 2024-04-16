@@ -5,12 +5,21 @@ var rng = RandomNumberGenerator.new()
 
 @onready var TransCam = get_node("/root/game_scene/TransparentWindow/TransCam") 
 @onready var AntNode = get_node("/root/game_scene/TransparentWindow/TransCam/Ants")
+@onready var EnemyNode = get_node("/root/game_scene/TransparentWindow/TransCam/Enemies")
+@onready var NextWaveText = get_node("/root/game_scene/TransparentWindow/HUD/ResourceBar/NextWave")
+var TimeNextWave = 60
+var waveNum = 0
 @onready var antScene = load("res://ant.tscn")
+@onready var rockEnemyScene = load("res://assets/game/rockEnemy.tscn")
+@onready var furEnemyScene = load("res://assets/game/furEnemy.tscn")
+@onready var meatEnemyScene = load("res://assets/game/meatEnemy.tscn")
 @onready var spawnParticle = load("res://assets/game/spawnParticle.tscn")
 
 var primaryScreen = {screenNum = DisplayServer.get_primary_screen(), size = DisplayServer.screen_get_size(DisplayServer.get_primary_screen()), position = DisplayServer.screen_get_position(DisplayServer.get_primary_screen())}
 @onready var game_scene = get_node("/root/game_scene")
 @onready var primaryWindow = game_scene.get_window()
+@onready var pileWindow = get_node("/root/game_scene/Pile")
+var pileWinVisible = false
 var centerWin = false
 
 var totalAnts = 0
@@ -19,7 +28,9 @@ var totalScavs = 0
 var totalFighters = 0
 
 var food = rng.randi_range(2, 4)
-var stone = 0
+var stone = rng.randi_range(2, 4)
+
+var clickSound = AudioStreamPlayer.new()
 
 func centerWindow(win:Window):
 	var targetpos = Vector2i(primaryScreen.position + ((primaryScreen.size / 2) - (win.size / 2)))
@@ -60,6 +71,9 @@ func countAnts():
 
 func addAnts(default = false):
 	if food >= 5 or default:
+		clickSound.pitch_scale = rng.randf_range(0.75, 1.25)
+		clickSound.play()
+		
 		var ant = antScene.instantiate()
 		AntNode.add_child(ant)
 		
@@ -76,10 +90,24 @@ func addAnts(default = false):
 		particle.queue_free()
 
 func changeRole(from, to):
+	var purchasable = true
+	
 	for ant in AntNode.get_children():
 		if ant.currentAction == from:
-			ant.currentAction = to
-			break
+			if to == "Fighting":
+				if food < 5 or stone < 5:
+					purchasable = false
+				else:
+					food -= 5
+					stone -= 5
+					purchasable = true
+				
+			if purchasable:
+				clickSound.pitch_scale = rng.randf_range(0.75, 1.25)
+				clickSound.play()
+			
+				ant.currentAction = to
+				break
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -88,6 +116,21 @@ func _ready():
 	primaryWindow.size = Vector2i(64, 64)
 	primaryWindow.position = Vector2i(primaryScreen.position + ((primaryScreen.size / 2) - (primaryWindow.size / 2)))
 	resizeWindow(primaryWindow, 320, 320, true, 2, Tween.EASE_OUT, Tween.TRANS_BACK)
+	
+	pileWindow.position = Vector2(-1000, 0)
+	
+	###############SOUNDS###############
+	var volume = 20
+	
+	add_child(clickSound)
+	clickSound.stream = load("res://assets/game/sounds/Buy1.ogg")
+	clickSound.volume_db = volume
+	
+	var music = get_node("HUD/AudioStreamPlayer")
+	music.stream.loop = true
+	
+	####################################
+	
 	await get_tree().create_timer(2).timeout
 	centerWin = true
 	
@@ -111,8 +154,56 @@ func _input(event):
 		if event.is_action_pressed("debugGiveStone"):
 			stone += 1
 
+func summonWave(wavenumber):
+	if (60 - (wavenumber * 5)) < 30:
+		TimeNextWave = 30
+	else:
+		TimeNextWave = 60 - (wavenumber * 5)
+	
+	for i in range(wavenumber):
+		for j in range(rng.randi_range(wavenumber, wavenumber * 2)):
+			var enemies = [rockEnemyScene, furEnemyScene, meatEnemyScene]
+			var randomEnemy = rng.randi_range(0, 2)
+			
+			var enemy = enemies[randomEnemy].instantiate()
+			var targetPos = Vector2(0, 0)
+			var side = rng.randi_range(1, 4)
+			if side == 1:
+				targetPos = Vector2(rng.randf_range(-1060, 1060), -640)
+			elif side == 2:
+				targetPos = Vector2(rng.randf_range(-1060, 1060), 640)
+			elif side == 3:
+				targetPos = Vector2(-1060, rng.randf_range(-640, 640))
+			elif side == 4:
+				targetPos = Vector2(1060, rng.randf_range(-640, 640))
+			
+			enemy.position = targetPos
+			
+			EnemyNode.add_child(enemy)
+
+var pileTween = true
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if pileWinVisible and pileTween:
+		pileTween = false
+		pileWindow.position = Vector2(primaryWindow.position.x + 400, primaryWindow.position.y -50)
+		resizeWindow(pileWindow, 200, 200, true, 2, Tween.EASE_OUT, Tween.TRANS_BACK)
+	
+	if totalScavs > 0:
+		pileWinVisible = true
+	
 	if centerWin:
 		centerWindow(primaryWindow)
 	countAnts()
+	
+	if TimeNextWave <= 0:
+		waveNum += 1
+		summonWave(waveNum)
+	else:
+		TimeNextWave -= delta
+	
+	var mins = int(int(TimeNextWave) / 60)
+	var seconds = int(TimeNextWave) - (mins * 60)
+	if seconds < 10:
+		seconds = str("0" + str(seconds))
+	NextWaveText.text = "Next Wave:\n" + (str(mins) + ":" + str(seconds))

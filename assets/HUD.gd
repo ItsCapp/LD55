@@ -11,6 +11,9 @@ extends Camera2D
 @onready var TotalScavs = get_node("ResourceBar/TotalScavs")
 @onready var TotalScavsText = get_node("ResourceBar/TotalScavs/Counter")
 
+@onready var TotalFighters = get_node("ResourceBar/TotalFighters")
+@onready var TotalFightersText = get_node("ResourceBar/TotalFighters/Counter")
+
 @onready var TotalFood = get_node("ResourceBar/TotalFood")
 @onready var TotalFoodText = get_node("ResourceBar/TotalFood/Counter")
 
@@ -30,8 +33,9 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	TotalAntsText.text = str(game_scene.totalAnts)
+	TotalAntsText.text = str(game_scene.totalIdle)
 	#TotalIdleText.text = "Jobless Ants: " + str(game_scene.totalIdle)
 	TotalScavsText.text = str(game_scene.totalScavs)
+	TotalFightersText.text = str(game_scene.totalFighters)
 	TotalFoodText.text = str(game_scene.food)
 	TotalStoneText.text = str(game_scene.stone)

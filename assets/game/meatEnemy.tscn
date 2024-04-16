@@ -1,0 +1,46 @@
+[gd_scene load_steps=9 format=3 uid="uid://c2cj6pacfjvwd"]
+
+[ext_resource type="Texture2D" uid="uid://mrebbk44souy" path="res://assets/game/meatEnemy.png" id="1_mbcjn"]
+[ext_resource type="Script" path="res://assets/game/meatEnemy.gd" id="2_6jyq4"]
+
+[sub_resource type="Gradient" id="Gradient_xhmi8"]
+colors = PackedColorArray(1, 1, 1, 0.392157, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_bl0yo"]
+gradient = SubResource("Gradient_xhmi8")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_cagmw"]
+particle_flag_disable_z = true
+gravity = Vector3(0, 0, 0)
+orbit_velocity_min = 0.0
+orbit_velocity_max = 0.0
+angle_min = -90.0
+angle_max = 90.0
+color_ramp = SubResource("GradientTexture1D_bl0yo")
+
+[sub_resource type="Gradient" id="Gradient_os7r5"]
+offsets = PackedFloat32Array(1)
+colors = PackedColorArray(0.140907, 0.0544285, 0.00496624, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_n8fok"]
+gradient = SubResource("Gradient_os7r5")
+width = 20
+height = 20
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_70or0"]
+
+[node name="Meat" type="Sprite2D"]
+texture = ExtResource("1_mbcjn")
+script = ExtResource("2_6jyq4")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+z_index = -1
+amount = 30
+process_material = SubResource("ParticleProcessMaterial_cagmw")
+texture = SubResource("GradientTexture2D_n8fok")
+lifetime = 1.5
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+shape = SubResource("CircleShape2D_70or0")
