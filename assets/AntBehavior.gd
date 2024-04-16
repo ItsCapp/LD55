@@ -125,7 +125,7 @@ func _process(delta):
 		if currentlyCarrying == "Resources" and currentAction == "Scavenging":
 			currentlyCarrying = "Nothing"
 			itemSprite.texture = null
-			game_scene.food += rng.randi_range(1, 4)
+			game_scene.food += rng.randi_range(2, 5)
 			game_scene.stone += rng.randi_range(0, 2)
 			
 			collectSound.pitch_scale = rng.randf_range(0.75, 1.25)

@@ -95,10 +95,9 @@ func changeRole(from, to):
 	for ant in AntNode.get_children():
 		if ant.currentAction == from:
 			if to == "Fighting":
-				if food < 5 or stone < 5:
+				if stone < 5:
 					purchasable = false
 				else:
-					food -= 5
 					stone -= 5
 					purchasable = true
 				

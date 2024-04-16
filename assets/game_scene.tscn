@@ -291,27 +291,15 @@ offset_right = 85.9192
 offset_bottom = 52.1108
 text = "1"
 
-[node name="RichTextLabel3" type="RichTextLabel" parent="TransparentWindow/HUD/ResourceBar/TotalFighters/Cost"]
-offset_left = 85.3233
-offset_top = 24.1108
-offset_right = 126.323
-offset_bottom = 52.1108
-text = "5"
-
-[node name="Sprite2D" type="Sprite2D" parent="TransparentWindow/HUD/ResourceBar/TotalFighters/Cost"]
-position = Vector2(107.394, 37.0909)
-scale = Vector2(0.40625, 0.40625)
-texture = ExtResource("8_rnpk6")
-
 [node name="RichTextLabel4" type="RichTextLabel" parent="TransparentWindow/HUD/ResourceBar/TotalFighters/Cost"]
-offset_left = 128.222
+offset_left = 80.7476
 offset_top = 24.2853
-offset_right = 169.222
+offset_right = 121.748
 offset_bottom = 52.2853
 text = "5"
 
 [node name="Sprite2D3" type="Sprite2D" parent="TransparentWindow/HUD/ResourceBar/TotalFighters/Cost"]
-position = Vector2(150.293, 37.2654)
+position = Vector2(102.818, 37.2654)
 scale = Vector2(0.40625, 0.40625)
 texture = ExtResource("9_4jars")
 
